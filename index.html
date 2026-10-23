@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaShop | Tienda Virtual Completa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <a href="index.html" class="logo">Nova<span>Shop</span></a>
+            <nav class="main-nav">
+                <a href="#catalogo">Productos</a>
+                <a href="#inventario" id="inventario-link">Inventario</a>
+                <button type="button" id="btn-open-login" class="update-stock-button" style="background:transparent; border:0;">Iniciar Sesión</button>
+                <button type="button" id="btn-open-register" class="update-stock-button" style="background:transparent; border:0;">Crear Cuenta</button>
+                <span id="user-logged-display" style="display:none; font-weight:700;"></span>
+                <button type="button" id="btn-logout" class="update-stock-button" style="display:none; background:transparent; border:0; color:var(--danger);">Cerrar Sesión</button>
+            </nav>
+            <a href="#carrito" class="header-cart">🛒 Carrito <span id="cart-count">0</span></a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">BIENVENIDO A NOVASHOP</span>
+                <h1>Encuentra lo que necesitas sin salir de la pestaña.</h1>
+                <p>Explora nuestros productos de tecnología, hogar y moda con navegación de pantalla completa ultra rápida.</p>
+            </div>
+        </section>
+
+        <section class="section" id="catalogo">
+            <div class="section-heading">
+                <div>
+                    <h2>Productos destacados</h2>
+                    <p>Consulta los precios y las unidades disponibles.</p>
+                </div>
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input type="text" id="product-search" placeholder="Buscar productos...">
+                </div>
+            </div>
+
+            <!-- CONTENEDOR PRINCIPAL DINÁMICO QUE CAMBIA EN PANTALLA COMPLETA -->
+            <div id="product-list" class="product-grid">
+                <!-- Se inyecta dinámicamente -->
+            </div>
+            <div id="empty-products" class="empty-message" hidden>No se encontraron productos.</div>
+        </section>
+
+        <section class="section inventory-section" id="inventario">
+            <h2>Control de inventario</h2>
+            <div class="inventory-notice">
+                <p>ℹ Modifica el precio y la cantidad de unidades de cada variante y pulsa <strong>Guardar cambios</strong>.</p>
+            </div>
+            <div class="admin-qr-panel">
+                <h3>Configuración del QR de Yape</h3>
+                <p>Sube la imagen del QR que verán los clientes al elegir Yape. Se guardará en este navegador.</p>
+                <label for="yape-qr-upload" class="upload-label">Seleccionar imagen del QR</label>
+                <input type="file" id="yape-qr-upload" accept="image/*">
+                <button type="button" id="remove-yape-qr" class="update-stock-button">Quitar QR guardado</button>
+                <p id="yape-qr-admin-message" class="status-message" aria-live="polite"></p>
+                <div id="admin-qr-preview" class="qr-preview"></div>
+            </div>
+            <p id="inventory-message" class="status-message"></p>
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio actual</th>
+                        <th>Nuevo precio (S/)</th>
+                        <th>Stock actual</th>
+                        <th>Nuevo stock</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-list">
+                    <!-- Se inyecta dinámicamente -->
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="carrito">
+            <h2>Mi carrito de compras</h2>
+            <p id="cart-message" class="status-message"></p>
+            <div class="cart-layout">
+                <div id="cart-items">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+                <div class="summary-card">
+                    <h3>Resumen de compra</h3>
+                    <div class="summary-row"><span>Subtotal</span><strong id="subtotal">S/ 0.00</strong></div>
+                    <div class="summary-row"><span>Envío</span><strong id="shipping">S/ 0.00</strong></div>
+                    <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+                    <div class="summary-row" style="font-size:1.2rem; color:var(--text);"><span>Total</span><strong id="total" style="color:var(--primary);">S/ 0.00</strong></div>
+                    <div class="payment-method-panel">
+                        <label for="payment-method"><strong>Método de pago</strong></label>
+                        <select id="payment-method" class="payment-select">
+                            <option value="yape">Yape (QR)</option>
+                            <option value="plin">Plin (QR o transferencia)</option>
+                            <option value="contraentrega">Pago contraentrega</option>
+                        </select>
+                        <p class="payment-note" id="payment-note">Escanea el QR de Yape para realizar el pago. La tienda no verifica automáticamente la transferencia.</p>
+                        <div id="yape-qr-checkout" class="yape-qr-checkout" hidden></div>
+                    </div>
+                    <button type="button" id="checkout-button" class="checkout-button" style="margin-top:20px;">Confirmar compra</button>
+                    <button type="button" id="clear-cart" class="update-stock-button" style="width:100%; margin-top:10px; background:transparent; color:var(--muted);">Vaciar carrito</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section admin-dashboard" id="admin-dashboard" hidden>
+            <h2>Panel privado del creador</h2>
+            <div class="admin-stats">
+                <article><span>Ganancias totales (ventas brutas)</span><strong id="admin-total-earnings">S/ 0.00</strong></article>
+                <article><span>Pedidos realizados</span><strong id="admin-order-count">0</strong></article>
+            </div>
+            <section class="product-form-panel" aria-labelledby="add-product-heading">
+                <h3 id="add-product-heading">Agregar nuevo producto</h3>
+                <p>Registra un producto en el catálogo. Los datos se guardan en este navegador junto con el inventario.</p>
+                <form id="form-add-product" class="product-form">
+                    <div class="form-field">
+                        <label for="new-product-name">Nombre del producto</label>
+                        <input id="new-product-name" name="name" type="text" maxlength="100" placeholder="Ej. Parlante Bluetooth" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-product-category">Categoría</label>
+                        <select id="new-product-category" name="category" required>
+                            <option value="">Selecciona una categoría</option>
+                            <option>Tecnología</option><option>Hogar</option><option>Moda</option><option>Accesorios</option><option>Deportes</option><option>Belleza</option><option>Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-field full-width">
+                        <label for="new-product-description">Descripción</label>
+                        <textarea id="new-product-description" name="description" maxlength="600" placeholder="Describe las características principales" required></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-product-price">Precio inicial (S/)</label>
+                        <input id="new-product-price" name="price" type="number" min="0" step="0.01" placeholder="99.90" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-product-stock">Stock inicial</label>
+                        <input id="new-product-stock" name="stock" type="number" min="0" step="1" placeholder="10" required>
+                    </div>
+                    <div class="form-field full-width">
+                        <label for="new-product-image">URL o ruta de imagen</label>
+                        <input id="new-product-image" name="image" type="text" maxlength="1000" placeholder="img/producto.jpg o https://..." required>
+                    </div>
+                    <button type="submit" class="checkout-button">Guardar nuevo producto</button>
+                </form>
+                <p id="add-product-message" class="status-message" aria-live="polite"></p>
+            </section>
+            <h3>Historial de pedidos</h3>
+            <div class="orders-table-wrap"><table class="inventory-table"><thead><tr><th>Pedido</th><th>Fecha</th><th>Productos</th><th>Pago</th><th>Total</th></tr></thead><tbody id="admin-orders-list"></tbody></table></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <a href="index.html" class="logo footer-logo">Nova<span>Shop</span></a>
+                <p>Tu tienda virtual para encontrar productos que te encantan.</p>
+            </div>
+            
+            <div>
+                <h3>Contactos</h3>
+                <p>
+                    📞 +51 951 189 887 <br>
+                    <a href="https://wa.me/51951189887" target="_blank" style="color:#25d366; font-weight:700;">💬 WhatsApp</a>
+                </p>
+            </div>
+
+            <div>
+                <h3>Redes sociales</h3>
+                <a href="https://www.facebook.com/daniel.huamani.864722/" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://www.instagram.com/dani.softnyx_/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year">2026</span> NovaShop. Todos los derechos reservados. Navegación fluida por History API.</p>
+        </div>
+    </footer>
+
+    <!-- Modales de sesión nativos ocultos -->
+    <div id="modal-login" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:12px; width:320px; position:relative;">
+            <h3>Iniciar Sesión</h3>
+            <form id="form-login">
+                <input type="email" id="login-email" placeholder="Correo" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="password" id="login-password" placeholder="Contraseña" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <p id="login-error-msg" style="color:var(--danger); font-size:0.85rem;"></p>
+                <button type="submit" class="checkout-button">Ingresar</button>
+                <button type="button" class="btn-close-modal" style="position:absolute; top:10px; right:10px; border:0; background:transparent; font-size:1.2rem;">✕</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-register" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:12px; width:320px; position:relative;">
+            <h3>Crear Cuenta</h3>
+            <form id="form-register">
+                <input type="text" id="reg-names" placeholder="Nombres" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="text" id="reg-lastnames" placeholder="Apellidos" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="email" id="reg-email" placeholder="Correo (@gmail / @hotmail)" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="password" id="reg-password" placeholder="Contraseña" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="text" id="reg-address" placeholder="Dirección" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <input type="text" id="reg-phone" placeholder="Teléfono" required style="width:100%; margin-bottom:10px; padding:8px;"><br>
+                <p id="reg-error-msg" style="color:var(--danger); font-size:0.85rem;"></p>
+                <button type="submit" class="checkout-button">Registrar</button>
+                <button type="button" class="btn-close-modal" style="position:absolute; top:10px; right:10px; border:0; background:transparent; font-size:1.2rem;">✕</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
